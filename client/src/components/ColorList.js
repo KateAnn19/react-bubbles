@@ -32,10 +32,10 @@ const ColorList = ({ colors, updateColors }) => {
       .then((res) => {
         setIsLoading(true);
         updateColors([...colors, res.data]);
-        setEditing(false)
-         setTimeout(function () {
+        setEditing(false);
+        setTimeout(function () {
           setIsLoading(false);
-          push('/protected')
+          push("/protected");
         }, 2000);
       })
       .catch((err) => console.log(err));
@@ -46,35 +46,52 @@ const ColorList = ({ colors, updateColors }) => {
 
   const deleteColor = (color) => {
     // make a delete request to delete this color
+    console.log("COLOR INSIDE DELETE", color);
+    axiosWithAuth()
+      .delete(`/api/colors/${color.id}`)
+      .then((res) => {
+        setIsLoading(true);
+        // console.log("COLORS",colors)
+        console.log("RES IN DeleTE", res);
+        console.log(colors);
+        updateColors(colors = colors.filter(color => color.id !== res.data));
+
+        setTimeout(function () {
+          setIsLoading(false);
+          //push('/protected')
+        }, 2000);
+      });
   };
 
   return (
     <div className="colors-wrap">
       <p>colors</p>
-      {loading ? "Loading..." : 
-      <ul>
-       
-        {colors.map((color) => (
-          <li key={color.color} onClick={() => editColor(color)}>
-            <span>
-              <span
-                className="delete"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  deleteColor(color);
-                }}
-              >
-                x
-              </span>{" "}
-              {color.color}
-            </span>
-            <div
-              className="color-box"
-              style={{ backgroundColor: color.code.hex }}
-            />
-          </li>
-        ))}
-      </ul>}
+      {loading ? (
+        "Loading..."
+      ) : (
+        <ul>
+          {colors.map((color) => (
+            <li key={color.color} onClick={() => editColor(color)}>
+              <span>
+                <span
+                  className="delete"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteColor(color);
+                  }}
+                >
+                  x
+                </span>{" "}
+                {color.color}
+              </span>
+              <div
+                className="color-box"
+                style={{ backgroundColor: color.code.hex }}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
       {editing && (
         <form onSubmit={saveEdit}>
           <legend>edit color</legend>
