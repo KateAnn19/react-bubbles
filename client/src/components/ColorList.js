@@ -9,12 +9,11 @@ const initialColor = {
 };
 
 const ColorList = ({ colors, updateColors }) => {
-  console.log("colors inside color list", colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
   const [newColor, setNewColor] = useState(initialColor);
   const [loading, setIsLoading] = useState(false);
-
+console.log(newColor)
   const { push } = useHistory();
   const { id } = useParams();
 
@@ -46,15 +45,13 @@ const ColorList = ({ colors, updateColors }) => {
 
   const deleteColor = (color) => {
     // make a delete request to delete this color
-    console.log("COLOR INSIDE DELETE", color);
     axiosWithAuth()
       .delete(`/api/colors/${color.id}`)
       .then((res) => {
         setIsLoading(true);
-        // console.log("COLORS",colors)
-        console.log("RES IN DeleTE", res);
-        console.log(colors);
-        updateColors(colors = colors.filter(color => color.id !== res.data));
+        updateColors(
+          (colors = colors.filter((color) => color.id !== res.data))
+        );
 
         setTimeout(function () {
           setIsLoading(false);
@@ -62,6 +59,28 @@ const ColorList = ({ colors, updateColors }) => {
         }, 2000);
       });
   };
+
+  const addColor = (e) => {
+    e.preventDefault();
+    console.log("this is new color", newColor);
+    axiosWithAuth()
+      .post("/api/colors/", newColor)
+      .then((res) => {
+        console.log(res.data);
+        updateColors(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  // const changeHandler = (ev) => {
+  //   console.log(newColor)
+  //   setNewColor({
+  //     ...newColor,
+  //     [ev.target.name]: ev.target.value,
+  //   });
+  //   console.log(newColor)
+  // };
 
   return (
     <div className="colors-wrap">
@@ -124,6 +143,35 @@ const ColorList = ({ colors, updateColors }) => {
       )}
       <div className="spacer" />
       {/* stretch - build another form here to add a color */}
+
+      <form onSubmit={addColor}>
+        <label>
+          color name:
+          <input
+            name="color"
+            onChange={(e) =>
+              // console.log(newColor)
+              setNewColor({ ...newColor, color: e.target.value })
+            }
+            value={newColor.color}
+          />
+        </label>
+        <label>
+          hex code:
+          <input
+            name="code"
+            onChange={(e) =>
+            setNewColor({
+              ...newColor,
+              code: { hex: e.target.value },
+            })}
+            value={newColor.code.hex}
+          />
+        </label>
+        <div className="button-row">
+          <button>Add</button>
+        </div>
+      </form>
     </div>
   );
 };
