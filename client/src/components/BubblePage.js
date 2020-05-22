@@ -18,6 +18,7 @@ const BubblePage = () => {
     })
     .catch(err => console.log(err))
   }, []);
+  
 
   return (
     <>
