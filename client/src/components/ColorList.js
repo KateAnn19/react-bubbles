@@ -13,7 +13,9 @@ const ColorList = ({ colors, updateColors }) => {
   const [colorToEdit, setColorToEdit] = useState(initialColor);
   const [newColor, setNewColor] = useState(initialColor);
   const [loading, setIsLoading] = useState(false);
-console.log(newColor)
+
+  console.log('colors',colors)
+
   const { push } = useHistory();
   const { id } = useParams();
 
@@ -23,21 +25,21 @@ console.log(newColor)
   };
 
   const saveEdit = (e) => {
+    colors = colors.filter((color) => colorToEdit.id !== color.id)
     e.preventDefault();
     axiosWithAuth()
       .put(`/api/colors/${colorToEdit.id}`, colorToEdit)
-
       // Make a put request to save your updated color
       .then((res) => {
         setIsLoading(true);
-        updateColors([...colors, res.data]);
+        updateColors([...colors, res.data])
         setEditing(false);
         setTimeout(function () {
           setIsLoading(false);
           push("/protected");
         }, 2000);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
 
     // think about where will you get the id from...
     // where is is saved right now?
@@ -52,7 +54,6 @@ console.log(newColor)
         updateColors(
           (colors = colors.filter((color) => color.id !== res.data))
         );
-
         setTimeout(function () {
           setIsLoading(false);
           //push('/protected')
@@ -62,12 +63,11 @@ console.log(newColor)
 
   const addColor = (e) => {
     e.preventDefault();
-    console.log("this is new color", newColor);
     axiosWithAuth()
       .post("/api/colors/", newColor)
       .then((res) => {
-        console.log(res.data);
         updateColors(res.data);
+        setNewColor(initialColor)
       })
       .catch((err) => {
         console.log(err);
@@ -141,7 +141,7 @@ console.log(newColor)
           </div>
         </form>
       )}
-      <div className="spacer" />
+      {/* <div className="spacer" /> */}
       {/* stretch - build another form here to add a color */}
 
       <form onSubmit={addColor}>
