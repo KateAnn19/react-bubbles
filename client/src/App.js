@@ -11,7 +11,7 @@ function App() {
     <Router>
       <div className="App">
         <li>
-          <Link to='/login'>Login</Link>
+          <Link to='/'>Login</Link>
         </li>
         <li>
           <Link to='/protected'>Protected Page</Link>
