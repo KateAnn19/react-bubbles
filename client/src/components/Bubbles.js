@@ -3,6 +3,7 @@ import { Pack } from "@potion/layout";
 import { Svg, Circle } from "@potion/element";
 
 const Bubbles = ({ colors }) => {
+  console.log("AFTER UPDATE", colors)
   const [bubbleData, setBubbleData] = useState([]);
   useEffect(() => {
     const generateBubbleData = colors.map((_, i) => ({
